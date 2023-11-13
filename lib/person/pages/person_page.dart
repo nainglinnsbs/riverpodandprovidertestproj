@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpodandprovidertestproj/core/persentation/router/app_route.dart';
 import 'package:riverpodandprovidertestproj/person/domain/person.dart';
 import 'package:riverpodandprovidertestproj/person/shared/person_provider.dart';
 
@@ -84,12 +85,28 @@ class _PersonPageState extends ConsumerState<PersonPage> {
               leading: CircleAvatar(child: Text('${index + 1}')),
               title: Text(personList[index].name),
               subtitle: Text(personList[index].phone),
+              trailing: IconButton(
+                  onPressed: () {
+                    ref
+                        .read(savePersonNotifierProvider.notifier)
+                        .deletePerson(personList[index].id);
+                    setState(() {
+                      personList.removeAt(index);
+                    });
+                  },
+                  icon: const Icon(Icons.delete)),
+              onTap: () => AutoRouter.of(context)
+                  .push(UpdatePersonRoute(person: personList[index])),
             ),
           ),
         ),
         error: (error) => const Center(
           child: Text('Error/nSomething wrong'),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => AutoRouter.of(context).push(const AddPersonRoute()),
+        child: const Icon(Icons.add),
       ),
     );
   }
